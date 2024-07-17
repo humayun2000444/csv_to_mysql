@@ -11,7 +11,6 @@ import java.util.Date;
 @Entity
 @Table(name = "tb_mnp")
 public class TbMnp {
-
     @Id
     @Column(name = "number", unique = true, nullable = false)
     private String number;
@@ -34,61 +33,61 @@ public class TbMnp {
     @Column(name = "portedAction", nullable = false)
     private String portedAction;
 
-
-
-    public void setNumber(String number) {
-        this.number = number;
-    }
+    // Getters and setters
 
     public String getNumber() {
         return number;
     }
 
-    public void setPortedDate(Date portedDate) {
-        this.portedDate = portedDate;
+    public void setNumber(String number) {
+        this.number = number;
     }
 
     public Date getPortedDate() {
         return portedDate;
     }
 
-    public void setRecipientRC(int recipientRC) {
-        this.recipientRC = recipientRC;
+    public void setPortedDate(Date portedDate) {
+        this.portedDate = portedDate;
     }
 
     public int getRecipientRC() {
         return recipientRC;
     }
 
-    public void setDonerRC(int donerRC) {
-        this.donerRC = donerRC;
+    public void setRecipientRC(int recipientRC) {
+        this.recipientRC = recipientRC;
     }
 
     public int getDonerRC() {
         return donerRC;
     }
 
-    public void setNrhRC(int nrhRC) {
-        this.nrhRC = nrhRC;
+    public void setDonerRC(int donerRC) {
+        this.donerRC = donerRC;
     }
 
     public int getNrhRC() {
         return nrhRC;
     }
 
-    public void setNumberType(String numberType) {
-        this.numberType = numberType;
+    public void setNrhRC(int nrhRC) {
+        this.nrhRC = nrhRC;
     }
 
     public String getNumberType() {
         return numberType;
     }
 
-    public void setPortedAction(String portedAction) {
-        this.portedAction = portedAction;
+    public void setNumberType(String numberType) {
+        this.numberType = numberType;
     }
 
     public String getPortedAction() {
         return portedAction;
+    }
+
+    public void setPortedAction(String portedAction) {
+        this.portedAction = portedAction;
     }
 }
