@@ -21,7 +21,7 @@ public class CsvToMysqlApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        String filePath = "C:/Users/Humayun/Desktop/2024-07-11.csv";
+        String filePath = "C:/Users/Humayun/Desktop/2024-07-14.csv";
         try {
             csvService.processCsv(filePath);
             System.out.println("CSV file processed successfully.");
