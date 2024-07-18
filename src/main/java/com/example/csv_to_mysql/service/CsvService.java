@@ -2,6 +2,7 @@ package com.example.csv_to_mysql.service;
 
 import com.example.csv_to_mysql.entity.TbMnp;
 import com.example.csv_to_mysql.repository.TbMnpRepository;
+import com.example.csv_to_mysql.utility.CsvDownloader;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +12,6 @@ import javax.transaction.Transactional;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.math.BigDecimal;
 
 @Service
 public class CsvService {
@@ -20,8 +19,16 @@ public class CsvService {
     @Autowired
     private TbMnpRepository repository;
 
+    public void downloadAndProcessCsv(String api, String date, String filePath) throws IOException, CsvValidationException, ParseException {
+        // Download the CSV file using CsvDownloader utility
+        CsvDownloader.downloadCsv(api, date, filePath);
+
+        // Process the downloaded CSV file
+        processCsv(filePath);
+    }
+
     @Transactional
-    public void processCsv(String filePath) throws IOException, CsvValidationException {
+    public void processCsv(String filePath) throws IOException, CsvValidationException, ParseException {
         try (CSVReader csvReader = new CSVReader(new FileReader(filePath))) {
             String[] values;
 
@@ -29,10 +36,9 @@ public class CsvService {
             csvReader.readNext();
 
             while ((values = csvReader.readNext()) != null) {
-                // Convert scientific notation to plain number format
-                String number = convertScientificNotationToPlainString(values[0]);
+                String number = String.format("%.0f", Double.parseDouble(values[0]));
                 int recipientRC = Integer.parseInt(values[2]);
-                int donerRC = Integer.parseInt(values[3]);
+                int donorRC = Integer.parseInt(values[3]);
                 int nrhRC = Integer.parseInt(values[4]);
                 String numberType = values[5];
                 String action = values[6].trim().toUpperCase();
@@ -40,7 +46,7 @@ public class CsvService {
                 TbMnp tbMnp = new TbMnp();
                 tbMnp.setNumber(number);
                 tbMnp.setRecipientRC(recipientRC);
-                tbMnp.setDonerRC(donerRC);
+                tbMnp.setDonerRC(donorRC);
                 tbMnp.setNrhRC(nrhRC);
                 tbMnp.setNumberType(numberType);
                 tbMnp.setPortedAction(action);
@@ -70,16 +76,6 @@ public class CsvService {
         } catch (Exception e) {
             e.printStackTrace();
             throw e; // Rethrow the exception to be caught by the controller
-        }
-    }
-
-    private String convertScientificNotationToPlainString(String numberStr) {
-        try {
-            BigDecimal bd = new BigDecimal(numberStr);
-            return bd.toPlainString();
-        } catch (NumberFormatException e) {
-            System.out.println("Failed to convert number: " + numberStr);
-            return numberStr; // Return original string if conversion fails
         }
     }
 }

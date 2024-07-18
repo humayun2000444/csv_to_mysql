@@ -24,6 +24,8 @@ public class CsvController {
         } catch (IOException | CsvValidationException e) {
             e.printStackTrace();
             return "Failed to process CSV: " + e.getMessage();
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
         }
     }
 }
