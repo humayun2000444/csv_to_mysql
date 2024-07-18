@@ -11,7 +11,8 @@ import javax.transaction.Transactional;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.math.BigDecimal;
 
 @Service
 public class CsvService {
@@ -20,7 +21,7 @@ public class CsvService {
     private TbMnpRepository repository;
 
     @Transactional
-    public void processCsv(String filePath) throws IOException, CsvValidationException, ParseException {
+    public void processCsv(String filePath) throws IOException, CsvValidationException {
         try (CSVReader csvReader = new CSVReader(new FileReader(filePath))) {
             String[] values;
 
@@ -28,7 +29,8 @@ public class CsvService {
             csvReader.readNext();
 
             while ((values = csvReader.readNext()) != null) {
-                String number = values[0];
+                // Convert scientific notation to plain number format
+                String number = convertScientificNotationToPlainString(values[0]);
                 int recipientRC = Integer.parseInt(values[2]);
                 int donerRC = Integer.parseInt(values[3]);
                 int nrhRC = Integer.parseInt(values[4]);
@@ -68,6 +70,16 @@ public class CsvService {
         } catch (Exception e) {
             e.printStackTrace();
             throw e; // Rethrow the exception to be caught by the controller
+        }
+    }
+
+    private String convertScientificNotationToPlainString(String numberStr) {
+        try {
+            BigDecimal bd = new BigDecimal(numberStr);
+            return bd.toPlainString();
+        } catch (NumberFormatException e) {
+            System.out.println("Failed to convert number: " + numberStr);
+            return numberStr; // Return original string if conversion fails
         }
     }
 }

@@ -21,7 +21,7 @@ public class CsvController {
         try {
             csvService.processCsv(filePath);
             return "CSV processed successfully.";
-        } catch (IOException | CsvValidationException | ParseException e) {
+        } catch (IOException | CsvValidationException e) {
             e.printStackTrace();
             return "Failed to process CSV: " + e.getMessage();
         }
