@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.Date;
+import java.sql.SQLOutput;
 import java.text.ParseException;
 
 @Service
@@ -37,19 +39,48 @@ public class CsvService {
 
             while ((values = csvReader.readNext()) != null) {
                 String number = String.format("%.0f", Double.parseDouble(values[0]));
+                String portedDate = values[1];
                 int recipientRC = Integer.parseInt(values[2]);
                 int donorRC = Integer.parseInt(values[3]);
                 int nrhRC = Integer.parseInt(values[4]);
                 String numberType = values[5];
                 String action = values[6].trim().toUpperCase();
 
+                Integer donorrc = 0;
+                String number_type = null;
+                String ported_action = null;
+                Date ported_date = null;
+
+                // Check if each index exists before trying to access it
+                if (values.length > 7 && values[7] != null) {
+                    donorrc = Integer.parseInt(values[7]);
+                }
+                if (values.length > 8 && values[8] != null) {
+                    number_type = values[8];
+                }
+                if (values.length > 9 && values[9] != null) {
+                    ported_action = values[9].trim().toUpperCase();
+                }
+                if (values.length > 10 && values[10] != null) {
+                    try {
+                        ported_date = java.sql.Date.valueOf(values[10]);
+                    } catch (IllegalArgumentException e) {
+                        e.printStackTrace(); // Handle parsing error for invalid date format
+                    }
+                }
+
                 TbMnp tbMnp = new TbMnp();
                 tbMnp.setNumber(number);
+                tbMnp.setPortedDate(portedDate);
                 tbMnp.setRecipientRC(recipientRC);
                 tbMnp.setDonerRC(donorRC);
                 tbMnp.setNrhRC(nrhRC);
                 tbMnp.setNumberType(numberType);
                 tbMnp.setPortedAction(action);
+                tbMnp.setDonorrc(donorrc);
+                tbMnp.setNumber_type(number_type);
+                tbMnp.setPorted_action(ported_action);
+                tbMnp.setPorted_date(ported_date);
 
                 switch (action) {
                     case "INSERT":
